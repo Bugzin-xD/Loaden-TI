@@ -1,0 +1,12 @@
+body {
+    background-image: url(Loading_icon.gif);
+    background-size: cover;  
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.text {
+    cursor: default;
+    position: fixed;
+    color: black
+}
