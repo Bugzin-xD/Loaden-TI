@@ -55,11 +55,6 @@
    text-decoration: none;
  }
 
- audio::-webkit-media-controls-panel {
-  background-color: #0066b965; 
-  color: #000000;
- }
-
 .music {
    color: blueviolet;
    font-family: cursive;
