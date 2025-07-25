@@ -50,7 +50,7 @@ body {
 }
 
 .bug {
-    cursor: no-drop;
+    cursor: not-allowed;
     color: red;
     cursor: default;
     font-family: cursive;
