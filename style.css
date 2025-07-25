@@ -14,7 +14,8 @@ body {
     left: 0;
     z-index: -1;
 }
-.baixo {
+
+.baxo {
     background-color: rgb(49, 49, 49);
     color: rgb(49, 49, 49);
     width: 100%;
@@ -25,22 +26,8 @@ body {
     align-items: center;
 }
 
-.text {
-    color: aliceblue;
-}
-
-.text2 {
-    color: blueviolet;
-}
-.text3 {
-    color: aliceblue;
-}
-
-.final {
-    color: aliceblue;
-}
-
 .text-geral {
+    color: blueviolet;
     cursor: default;
     font-family: 'Trebuchet MS', sans-serif;
     font-size: 30px;
@@ -62,66 +49,6 @@ body {
     position: relative; 
 }
 
-.links {
-    width: fit-content;
-    margin-right: auto;
-}
-
-.BetaV {
-    font-family: cursive;
-    width: fit-content;
-    margin-right: auto;
-}
-
-.beta {
-    color: blueviolet;
-}
-
-.versao {
-    color: aliceblue;
-}
-
-
-.linkContato {
-    -webkit-text-fill-color: gold;
-    padding: 2px;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 10px;
-    font-family: 'Trebuchet MS', sans-serif;
-    background-color: rgb(0, 11, 32);
-}
-
-.linkAvaliacao {
-    -webkit-text-fill-color: burlywood;
-    padding: 2px;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 10px;
-    font-family: 'Trebuchet MS', sans-serif;
-    background-color: rgb(0, 11, 32);
-}
-
-.linkSobre {
-    -webkit-text-fill-color: red;
-    padding: 2px;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 10px;
-    font-family: 'Trebuchet MS', sans-serif;
-    background-color: rgb(0, 11, 32);
-}
-
-.linkContatoS {
-    -webkit-text-fill-color: aqua;
-    padding: 2px;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 10px;
-    font-family: 'Trebuchet MS', sans-serif;
-    background-color: rgb(0, 11, 32);
-}
-
-a {
-    text-decoration: none;
-}
-
 .rodape {
     font-family: cursive;
     color: aliceblue;
@@ -129,18 +56,4 @@ a {
 
 html, body { 
     margin: 0; padding: 0; width: 100%; overflow-x: hidden; 
-}
-
-.visitor-count {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: white;
-    font-family: 'Trebuchet MS', sans-serif;
-    font-size: 14px;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 5px 10px;
-    border-radius: 5px;
-    display: none; 
 }
