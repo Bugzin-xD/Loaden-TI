@@ -53,10 +53,6 @@ body {
     cursor: not-allowed;
     color: red;
     font-family: cursive;
-    display: flex;
-    justify-content: center; 
-    align-items: center; 
-    height: 100vh;
 }
 
 a {
