@@ -58,7 +58,7 @@ body {
     cursor: no-drop;
     color: red;
     cursor: default;
-    font-family: 'Trebuchet MS', sans-serif;
+    font-family: cursive;
     display: flex;
     justify-content: center; 
     align-items: center; 
@@ -70,6 +70,10 @@ a {
     border: 3px;
     background-color: black;
     color: aliceblue;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh;
 }
 
 html, body { 
