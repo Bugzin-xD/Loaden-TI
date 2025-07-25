@@ -62,13 +62,8 @@ body {
 
 a {
     text-decoration: none;
-    border: 1.5px;
-    background-color: blueviolet;
-    color: aliceblue;
-    display: flex;
-    justify-content: center; 
+    color: aliceblue; 
     align-items: center; 
-    height: 100vh;
 }
 
 html, body { 
