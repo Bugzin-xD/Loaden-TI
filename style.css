@@ -52,7 +52,6 @@ body {
 .bug {
     cursor: not-allowed;
     color: red;
-    cursor: default;
     font-family: cursive;
     display: flex;
     justify-content: center; 
