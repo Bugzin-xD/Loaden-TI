@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loaden TI</title>
+ <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+    body { background-color: #0f172a; color: #cffafe; font-family: 'Trebuchet MS', sans-serif; margin: 0; overflow-x: hidden; }
+    * { -ms-overflow-style: none; scrollbar-width: none; }
+    *::-webkit-scrollbar { display: none; }
+    
+    .glass-card { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(34, 211, 238, 0.3); }
+    .load-text { background: linear-gradient(135deg, #22d3ee 0%, #2d1b69 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .glow-link { text-shadow: 0 0 15px rgba(34, 211, 238, 0.8); transition: 0.3s; }
+    
+    /* Estrelas Neon */
+    .star-icon { cursor: pointer; transition: 0.3s; color: #334155; }
+    .star-icon.active { 
+      color: #22d3ee; 
+      fill: #22d3ee; 
+      filter: drop-shadow(0 0 12px #22d3ee) drop-shadow(0 0 20px #0891b2);
+      transform: scale(1.1);
+    }
+    
+    .btn-primary { background: linear-gradient(135deg, #1e3a5f 0%, #2d1b69 100%); transition: 0.2s; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body class="h-full overflow-hidden">
+
+  <div id="app-container" class="relative h-full w-full">
+    <canvas id="starCanvas" class="absolute inset-0 z-0"></canvas>
+
+    <footer class="fixed bottom-0 left-0 w-full h-[60px] z-[200] bg-slate-900/90 flex justify-center items-center border-t border-cyan-900/50">
+      <span class="text-white text-sm opacity-80 italic">Obrigado por usar!</span>
+    </footer>
+
+    <main id="mainPage" class="relative z-10 h-full flex flex-col items-center justify-center p-4">
+      <div class="absolute top-6 left-6 text-center">
+        <p class="text-orange-500 text-xs font-bold uppercase tracking-widest mb-1">Acesse meu Scratch!</p>
+        <a href="https://scratch.mit.edu/users/Bugzin-xD" target="_blank" class="text-cyan-400 glow-link px-4 py-2 glass-card rounded-lg text-sm font-bold inline-block border-cyan-500/50 shadow-md shadow-cyan-500/10">Bugzin-xD</a>
+      </div>
+
+      <button onclick="document.getElementById('accessModal').classList.remove('hidden')" class="absolute top-4 right-4 px-4 py-2 glass-card rounded-lg text-cyan-300 text-sm hover:bg-slate-800 border-cyan-900">Painel</button>
+
+      <div class="text-center">
+        <h1 class="text-5xl md:text-7xl font-bold mb-10">
+          <span class="text-cyan-100">Dando um </span><span class="load-text font-orbitron">LOAD</span><span class="text-cyan-100"> melhor pra você!</span>
+        </h1>
+        <div class="flex gap-12 justify-center">
+          <button onclick="nav('contactPage')" class="text-2xl text-cyan-400 glow-link font-bold hover:scale-110 transition-transform">Contato</button>
+          <button onclick="nav('ratingPage')" class="text-2xl text-cyan-400 glow-link font-bold hover:scale-110 transition-transform">Avaliar</button>
+        </div>
+      </div>
+    </main>
+
+    <section id="panelPage" class="relative z-30 h-full flex items-center justify-center hidden p-4 bg-slate-950/95">
+      <div class="glass-card p-6 rounded-2xl w-full max-w-6xl max-h-[85%] flex flex-col border-cyan-500/30">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl text-cyan-100 font-orbitron font-bold tracking-tighter text-cyan-400">GERENCIADOR</h2>
+          <div class="flex gap-4">
+            <button id="clearAllBtn" onclick="deleteAllRecords()" class="bg-red-900/20 text-red-500 border border-red-900/50 px-4 py-1 rounded text-xs hover:bg-red-900/40">LIMPAR TUDO</button>
+            <button onclick="nav('mainPage')" class="text-slate-400 hover:text-white transition-colors">FECHAR</button>
+          </div>
+        </div>
+        <div class="overflow-y-auto flex-1">
+          <table class="w-full text-left">
+            <thead class="text-cyan-400 sticky top-0 bg-slate-900">
+              <tr class="text-xs uppercase tracking-widest">
+                <th class="p-4 border-b border-cyan-900/50">Nome</th>
+                <th class="p-4 border-b border-cyan-900/50">Tipo</th>
+                <th class="p-4 border-b border-cyan-900/50">Detalhes</th>
+                <th class="p-4 border-b border-cyan-900/50 text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody" class="text-cyan-100 divide-y divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <div id="editModal" class="fixed inset-0 z-[400] bg-black/90 flex items-center justify-center hidden p-4">
+      <div class="glass-card p-8 rounded-2xl w-full max-w-md border-yellow-500/50">
+        <h2 class="text-xl text-yellow-500 mb-6 font-orbitron font-bold">MOD</h2>
+        <input type="hidden" id="editIndex">
+        <div class="space-y-4">
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Nome:</label>
+            <input type="text" id="editNome" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Descrição/Serviço:</label>
+            <textarea id="editDesc" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white h-32"></textarea>
+          </div>
+          <div class="flex gap-4 pt-4">
+            <button onclick="document.getElementById('editModal').classList.add('hidden')" class="flex-1 text-slate-400">Cancelar</button>
+            <button id="saveEditBtn" onclick="confirmEdit()" class="flex-1 bg-yellow-600 text-white py-2 rounded-lg font-bold hover:bg-yellow-500">SALVAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="contactPage" class="relative z-20 h-full flex items-center justify-center hidden p-4">
+      <div class="glass-card p-8 rounded-3xl w-full max-w-md shadow-2xl border-cyan-500/20">
+        <button onclick="nav('mainPage')" class="text-cyan-500 mb-6 font-bold">← VOLTAR</button>
+        <form id="contactForm" class="space-y-4">
+          <input type="text" id="nome" placeholder="Seu Nome" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
+          <input type="text" id="servico" placeholder="O que você precisa?" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
+          <textarea id="descricao" placeholder="Descreva seu projeto..." class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white h-32 focus:border-cyan-400 outline-none" required></textarea>
+          <button type="submit" id="submitBtn" class="w-full btn-primary py-4 rounded-xl font-bold text-white tracking-widest uppercase shadow-lg shadow-cyan-500/20">Enviar</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="ratingPage" class="relative z-20 h-full flex items-center justify-center hidden p-4">
+        <div class="glass-card p-10 rounded-3xl w-full max-w-sm text-center">
+            <button onclick="nav('mainPage')" class="text-cyan-500 mb-6 block text-left font-bold">← VOLTAR</button>
+            <h2 class="text-xl text-cyan-100 mb-8 font-orbitron">Como foi sua experiência?</h2>
+            <div id="starContainer" class="flex justify-center gap-3 mb-10">
+                <span class="star-icon text-5xl" data-val="1">★</span>
+                <span class="star-icon text-5xl" data-val="2">★</span>
+                <span class="star-icon text-5xl" data-val="3">★</span>
+                <span class="star-icon text-5xl" data-val="4">★</span>
+                <span class="star-icon text-5xl" data-val="5">★</span>
+            </div>
+            <button id="sendRating" class="w-full btn-primary py-4 rounded-xl font-bold text-white uppercase tracking-widest">Enviar Feedback</button>
+        </div>
+    </section>
+
+    <div id="accessModal" class="fixed inset-0 z-[300] bg-black/95 flex items-center justify-center hidden">
+      <div class="glass-card p-10 rounded-3xl text-center max-w-xs w-full border-cyan-500/50 shadow-2xl shadow-cyan-500/20">
+        <div class="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <span class="text-cyan-500 text-2xl">🔒</span>
+        </div>
+        <h3 class="mb-4 text-cyan-100 font-bold font-orbitron tracking-widest">ACESSO RESTRITO</h3>
+        <input type="password" id="accessKey" placeholder="••••" class="bg-slate-900 border border-cyan-500 p-4 rounded-xl mb-8 w-full text-center text-white text-2xl tracking-[1em] focus:outline-none">
+        <div class="flex gap-4">
+          <button onclick="document.getElementById('accessModal').classList.add('hidden')" class="flex-1 text-slate-500 font-bold uppercase text-xs">Sair</button>
+          <button id="confirmKey" class="flex-1 btn-primary py-3 rounded-xl text-white font-bold uppercase text-xs shadow-lg shadow-cyan-500/20">Entrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzD_RYAwQFHItYK22K4RBX2THwh753qIsZpDDVwJVqtHS0xPUxr9eInAaYolUEt873Cg/exec';
+
+    function nav(pageId) {
+      document.querySelectorAll('main, section').forEach(p => p.classList.add('hidden'));
+      document.getElementById(pageId).classList.remove('hidden');
+      if(pageId === 'panelPage') loadFromSheets();
+    }
+
+    // CARREGAR DADOS NA TABELA
+    async function loadFromSheets() {
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = '<tr><td colspan="4" class="p-12 text-center animate-pulse text-cyan-500 font-bold font-orbitron tracking-widest">SINCRONIZANDO COM A NUVEM...</td></tr>';
+      try {
+        const res = await fetch(GOOGLE_SCRIPT_URL);
+        const data = await res.json();
+        tbody.innerHTML = '';
+        data.reverse().forEach((r) => {
+          tbody.innerHTML += `
+            <tr class="hover:bg-cyan-900/10 transition-all group">
+              <td class="p-4 font-bold text-sm border-b border-slate-800">${r.nome}</td>
+              <td class="p-4 text-xs border-b border-slate-800"><span class="bg-slate-800 px-2 py-1 rounded text-cyan-500 border border-cyan-900/50">${r.type}</span></td>
+              <td class="p-4 text-xs text-slate-400 border-b border-slate-800">${r.descricao}</td>
+              <td class="p-4 border-b border-slate-800">
+                <div class="flex gap-2 justify-center">
+                  <button onclick="openEditModal(${r.index}, '${r.nome}', '${r.descricao}')" class="text-[10px] font-bold text-yellow-500 hover:text-yellow-300 border border-yellow-500/30 px-2 py-1 rounded">MOD</button>
+                  <button onclick="deleteRow(${r.index}, this)" class="text-[10px] font-bold text-red-500 hover:text-red-300 border border-red-500/30 px-2 py-1 rounded uppercase">Excluir</button>
+                </div>
+              </td>
+            </tr>`;
+        });
+      } catch (e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center p-8 text-red-500">ERRO DE CONEXÃO</td></tr>'; }
+    }
+
+    // LÓGICA DE EDIÇÃO (MODAL)
+    function openEditModal(index, nome, desc) {
+      document.getElementById('editIndex').value = index;
+      document.getElementById('editNome').value = nome;
+      document.getElementById('editDesc').value = desc;
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    async function confirmEdit() {
+      const btn = document.getElementById('saveEditBtn');
+      const index = document.getElementById('editIndex').value;
+      const nome = document.getElementById('editNome').value;
+      const desc = document.getElementById('editDesc').value;
+      
+      btn.innerText = "(SALVANDO...)";
+      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "edit", index: parseInt(index), nome: nome, descricao: desc}) });
+      
+      document.getElementById('editModal').classList.add('hidden');
+      btn.innerText = "SALVAR MOD";
+      loadFromSheets();
+    }
+
+    // EXCLUIR
+    async function deleteRow(index, btn) {
+      if(!confirm("Tem certeza que deseja apagar este registro permanentemente?")) return;
+      btn.innerText = "...";
+      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "delete", index: index}) });
+      loadFromSheets();
+    }
+
+    async function deleteAllRecords() {
+      if(!confirm("ALERTA CRÍTICO: Você vai apagar TODOS os dados. Deseja continuar?")) return;
+      const btn = document.getElementById('clearAllBtn');
+      btn.innerText = "(APAGANDO...)";
+      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "deleteAll"}) });
+      btn.innerText = "LIMPAR TUDO";
+      loadFromSheets();
+    }
+
+    async function saveToCloud(data) {
+      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+    }
+
+    // EVENTOS GERAIS
+    document.getElementById('confirmKey').onclick = () => {
+      if(document.getElementById('accessKey').value === 'acess.key_bug') {
+        document.getElementById('accessModal').classList.add('hidden');
+        document.getElementById('accessKey').value = '';
+        nav('panelPage');
+      } else { alert("ACESSO NEGADO"); }
+    };
+
+    document.getElementById('contactForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      btn.innerText = "(ENVIANDO...)";
+      await saveToCloud({ type: 'CONTATO', nome: document.getElementById('nome').value, servico: document.getElementById('servico').value, descricao: document.getElementById('descricao').value });
+      btn.innerText = "Enviar para Cloud";
+      alert("Enviado com sucesso!"); 
+      e.target.reset();
+      nav('mainPage');
+    };
+
+    let rating = 0;
+    document.querySelectorAll('.star-icon').forEach(s => s.onclick = () => {
+      rating = s.dataset.val;
+      document.querySelectorAll('.star-icon').forEach(st => st.classList.toggle('active', st.dataset.val <= rating));
+    });
+
+    document.getElementById('sendRating').onclick = async () => {
+      if(!rating) return alert("Por favor, selecione as estrelas.");
+      const btn = document.getElementById('sendRating');
+      btn.innerText = "(ENVIANDO...)";
+      await saveToCloud({ type: 'AVALIAÇÃO', nome: 'Anônimo', rating: rating, descricao: rating + " estrelas" });
+      btn.innerText = "Enviar Feedback";
+      alert("Obrigado pela avaliação!"); 
+      nav('mainPage');
+    };
+
+    // Estrelas de fundo animadas
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; stars = Array.from({length: 120}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*0.3 + 0.1, r: Math.random()*1.5 })); }
+    function draw() { ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "rgba(100, 200, 255, 0.4)"; stars.forEach(s => { ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.y -= s.v; if(s.y < 0) s.y = canvas.height; }); requestAnimationFrame(draw); }
+    window.addEventListener('resize', resize); resize(); draw();
+  </script>
+</body>
+</html>
