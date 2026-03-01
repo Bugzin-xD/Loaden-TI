@@ -41,7 +41,7 @@
     <main id="mainPage" class="relative z-10 h-full flex flex-col items-center justify-center p-4">
       <div class="absolute top-6 left-6 text-center">
         <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color: cyan;">Contate no <b style="color: #20fc03;">WhatsApp</b></p>
-        <a href="https://wa.me/5519999669630" target="_blank" class="text-cyan-400 glow-link px-4 py-2 glass-card rounded-lg text-sm font-bold inline-block border-cyan-500/50 shadow-md shadow-cyan-500/10">Loaden</a>
+        <a href="https://wa.me/5519999669630&text=Olá!%20eu%20gostaria%20de%20um%20design" target="_blank" class="text-cyan-400 glow-link px-4 py-2 glass-card rounded-lg text-sm font-bold inline-block border-cyan-500/50 shadow-md shadow-cyan-500/10">Loaden</a>
       </div>
 
       <button onclick="document.getElementById('accessModal').classList.remove('hidden')" class="absolute top-4 right-4 px-4 py-2 glass-card rounded-lg text-cyan-300 text-sm hover:bg-slate-800 border-cyan-900">Painel</button>
@@ -70,7 +70,7 @@
           <table class="w-full text-left">
             <thead class="text-cyan-400 sticky top-0 bg-slate-900">
               <tr class="text-xs uppercase tracking-widest">
-                <th class="p-4 border-b border-cyan-900/50">Nome</th>
+                <th class="p-4 border-b border-cyan-900/50">Nome/número</th>
                 <th class="p-4 border-b border-cyan-900/50">Tipo</th>
                 <th class="p-4 border-b border-cyan-900/50">Detalhes</th>
                 <th class="p-4 border-b border-cyan-900/50">Motivo</th>
@@ -88,7 +88,7 @@
         <h2 class="text-xl text-yellow-500 mb-6 font-orbitron font-bold">MODIFICAR</h2>
         <input type="hidden" id="editIndex">
         <div class="space-y-4">
-          <input type="text" id="editNome" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white" placeholder="Nome">
+          <input type="text" id="editNome" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white" placeholder="Nome/número">
           <input type="text" id="editType" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white" placeholder="Tipo">
           <textarea id="editDesc" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white h-24" placeholder="Descrição"></textarea>
           <input type="text" id="editMotivo" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white" placeholder="Motivo">
@@ -104,7 +104,7 @@
       <div class="glass-card p-8 rounded-3xl w-full max-w-md shadow-2xl border-cyan-500/20">
         <button onclick="nav('mainPage')" class="text-cyan-500 mb-6 font-bold">← VOLTAR</button>
         <form id="contactForm" class="space-y-4">
-          <input type="text" id="nome" placeholder="Seu Nome" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
+          <input type="text" id="nome" placeholder="Seu Nome e número" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
           <input type="text" id="servico" placeholder="O que você precisa?" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
           <textarea id="descricao" placeholder="Descreva seu projeto..." class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white h-32 focus:border-cyan-400 outline-none" required></textarea>
           <button type="submit" id="submitBtn" class="w-full btn-primary py-4 rounded-xl font-bold text-white tracking-widest uppercase transition-all">Enviar</button>
@@ -292,3 +292,4 @@
   </script>
 </body>
 </html>
+
