@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   // Injetamos o ID de segurança aqui (no lado do servidor)
   const payload = {
     ...body,
-    authID: GOOGLE_SCRIPT_SECRET_ID
+    authID: secretId
   };
 
   try {
@@ -28,4 +28,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Erro ao conectar com Google Scripts' });
   }
 }
+
 
