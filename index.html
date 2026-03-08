@@ -23,7 +23,6 @@
     }
     .btn-primary { background: linear-gradient(135deg, #1e3a5f 0%, #2d1b69 100%); transition: 0.2s; }
     .hidden { display: none !important; }
-    
     .loading-spin { animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .btn-disabled { opacity: 0.5; pointer-events: none; cursor: not-allowed; }
@@ -144,7 +143,11 @@
   </div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyX7jsXffDJ-BWSr2bmdvfSHkECpMO3psPxZ6taKrx6ALsWMmP3h9OJi9rtQQapWZhGjA/exec';
+    // Link do Google permanece apenas para a função GET (leitura pública)
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4M_o2299eDJIjhNmQ_OGxdBBl4AXeJ-jDkxh_mulVou9lc4M6IKMPiiqvvYY8wEYylg/exec';
+    
+    // Rota segura da sua Vercel Function (arquivo /api/send.js)
+    const PROXY_URL = '/api/send';
 
     function nav(pageId) {
       document.querySelectorAll('main, section').forEach(p => p.classList.add('hidden'));
@@ -162,6 +165,7 @@
       }
     }
 
+    // A leitura continua direta do Google por ser pública
     async function loadFromSheets() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-cyan-500 font-bold font-orbitron tracking-widest"><div class="animate-pulse">SINCRONIZANDO...</div></td></tr>';
@@ -194,13 +198,13 @@
       document.getElementById('editModal').classList.remove('hidden');
     }
 
+    // Envio seguro via Vercel Proxy
     async function confirmEdit() {
       const btn = document.getElementById('saveEditBtn');
       setBtnLoading(btn, "SALVANDO...", true);
       
-      await fetch(GOOGLE_SCRIPT_URL, { 
+      await fetch(PROXY_URL, { 
         method: 'POST', 
-        mode: 'no-cors', 
         body: JSON.stringify({
           action: "edit", 
           index: parseInt(document.getElementById('editIndex').value), 
@@ -216,18 +220,31 @@
       loadFromSheets();
     }
 
+    // Deleção segura via Vercel Proxy
     async function deleteRow(index, btn) {
       if(!confirm("Apagar permanentemente?")) return;
       setBtnLoading(btn, "...", true);
-      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "delete", index: index}) });
+      await fetch(PROXY_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({
+          action: "delete", 
+          index: index
+        }) 
+      });
       loadFromSheets();
     }
 
+    // Limpeza total segura via Vercel Proxy
     async function deleteAllRecords() {
       if(!confirm("Apagar TUDO?")) return;
       const btn = document.getElementById('clearAllBtn');
       setBtnLoading(btn, "LIMPANDO...", true);
-      await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({action: "deleteAll"}) });
+      await fetch(PROXY_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({
+          action: "deleteAll"
+        }) 
+      });
       setBtnLoading(btn, "LIMPAR TUDO", false);
       loadFromSheets();
     }
@@ -239,13 +256,13 @@
       } else { alert("NEGADO"); }
     };
 
+    // Contato seguro via Vercel Proxy
     document.getElementById('contactForm').onsubmit = async (e) => {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       setBtnLoading(btn, "ENVIANDO...", true);
-      await fetch(GOOGLE_SCRIPT_URL, { 
+      await fetch(PROXY_URL, { 
         method: 'POST', 
-        mode: 'no-cors', 
         body: JSON.stringify({ 
           type: 'CONTATO', 
           nome: document.getElementById('nome').value, 
@@ -263,15 +280,15 @@
       document.querySelectorAll('.star-icon').forEach(st => st.classList.toggle('active', st.dataset.val <= rating));
     });
 
+    // Feedback seguro via Vercel Proxy
     document.getElementById('sendRating').onclick = async () => {
       const nome = document.getElementById('ratingNome').value;
       const motivo = document.getElementById('ratingMotivo').value;
       if(!nome || !rating) return alert("Preencha tudo!");
       const btn = document.getElementById('sendRating');
       setBtnLoading(btn, "PROCESSANDO...", true);
-      await fetch(GOOGLE_SCRIPT_URL, { 
+      await fetch(PROXY_URL, { 
         method: 'POST', 
-        mode: 'no-cors', 
         body: JSON.stringify({ 
           type: 'AVALIAÇÃO', 
           nome: nome, 
@@ -292,4 +309,3 @@
   </script>
 </body>
 </html>
-
