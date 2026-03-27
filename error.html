@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Erro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: rgb(0, 6, 26);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: blue;
+            text-shadow: 0px 0px 15px rgb(71, 71, 255);
+            text-align: center;
+            text-decoration: underline;
+            margin-bottom: 20px;
+            cursor: default;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            color: aliceblue;
+            max-width: 800px;
+            cursor: default;
+        }
+
+        footer {
+            background-color: rgb(0, 6, 26);
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1;
+            text-align: center;
+            box-shadow: 0px 0px 8px blue;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loaden { 
+            transition: ease-in-out 0.65s; 
+            box-shadow: 0px 1px 20px rgba(137, 43, 226, 0.719); 
+            border-radius: 50px; 
+            height: 30px; 
+            width: auto;
+        }
+
+        .loaden:hover { 
+            transform: rotateZ(360deg); 
+        }
+
+        #starCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>Erro</h1>
+        <h2>Você foi redirecionado para esta página pois ocorreu algum erro no funcionamento do site, tente novamente em breve!</h2>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <h6 style="font-size: 10px; color: aliceblue; font-family: sans-serif; opacity: 0.6;" id="date"></h6>
+            <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+                <p style="font-family: sans-serif; color: aliceblue;">Feito por</p>
+                <a href="https://loaden.vercel.app" target="_blank">
+                    <img src="favicon.ico" class="loaden" alt="Logo">
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <canvas id="starCanvas"></canvas>
+
+    <script>
+        const ano = new Date().getFullYear();
+        document.getElementById('date').innerText = `© ${ano} | Loaden`;
+
+        const canvas = document.getElementById('starCanvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resize() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+            stars = Array.from({length: 120}, () => ({ 
+                x: Math.random() * canvas.width, 
+                y: Math.random() * canvas.height, 
+                v: Math.random() * 0.3 + 0.1, 
+                r: Math.random() * 1.5 
+            })); 
+        }
+
+        function draw() { 
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
+            ctx.fillStyle = "rgba(100, 200, 255, 0.4)"; 
+            stars.forEach(s => { 
+                ctx.beginPath(); 
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2); 
+                ctx.fill(); 
+                s.y -= s.v; 
+                if(s.y < 0) s.y = canvas.height; 
+            }); 
+            requestAnimationFrame(draw); 
+        }
+
+        window.addEventListener('resize', resize); 
+        resize(); 
+        draw();
+    </script>
+</body>
+</html>
