@@ -1,0 +1,9 @@
+<footer>
+            <h6 style="margin-top: 30px; font-size: 10px; color: aliceblue; font-family: sans-serif; opacity: 0.6; text-align: center;" id="date"></h6>
+        <p style="font-family: sans-serif; color: aliceblue; text-align: center;">Feito por</p><a href="https://loaden.vercel.app" target="_blank" style="text-decoration: none; font-family: sans-serif; opacity: 100; margin-left: 660px;"><img src="Logo.png" style="border-radius: 50px; height: 30px; width: auto;" class="loaden"></a>
+         <script>
+        const ano = new Date().getFullYear();
+        document.querySelector('footer h6').innerText = `© ${ano} | Loaden`;
+
+    </script>
+        </footer>
