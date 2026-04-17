@@ -25,7 +25,31 @@
     .hidden { display: none !important; }
     .loading-spin { animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .btn-disabled { opacity: 0.5; pointer-events: none; cursor: not-allowed; }
+    .btn-disabled { opacity: 0.4; pointer-events: none; cursor: not-allowed; filter: grayscale(1); }
+    
+    /* Custom Checkbox */
+    .custom-checkbox {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #0891b2;
+      border-radius: 4px;
+      background: rgba(15, 23, 42, 0.5);
+      cursor: pointer;
+      position: relative;
+      vertical-align: middle;
+    }
+    .custom-checkbox:checked { background: #22d3ee; border-color: #22d3ee; }
+    .custom-checkbox:checked::after {
+      content: '✓';
+      position: absolute;
+      color: #0f172a;
+      font-weight: bold;
+      font-size: 14px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   </style>
 </head>
 <body class="h-full overflow-hidden">
@@ -106,7 +130,15 @@
           <input type="text" id="nome" placeholder="Seu Nome e número" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
           <input type="text" id="servico" placeholder="O que você precisa?" class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white focus:border-cyan-400 outline-none" required>
           <textarea id="descricao" placeholder="Descreva seu projeto..." class="w-full bg-slate-800/50 border border-cyan-900 p-4 rounded-xl text-white h-32 focus:border-cyan-400 outline-none" required></textarea>
-          <button type="submit" id="submitBtn" class="w-full btn-primary py-4 rounded-xl font-bold text-white tracking-widest uppercase transition-all">Enviar</button>
+          
+          <div class="flex items-start gap-3 px-1 py-2">
+            <input type="checkbox" id="termsContact" class="custom-checkbox mt-1" onchange="toggleBtn('submitBtn', this.checked)">
+            <label for="termsContact" class="text-xs text-slate-400 leading-tight">
+              Aceito os <button type="button" onclick="openTerms()" class="text-cyan-400 underline">termos de uso de dados</button>.
+            </label>
+          </div>
+
+          <button type="submit" id="submitBtn" class="w-full btn-primary py-4 rounded-xl font-bold text-white tracking-widest uppercase transition-all btn-disabled">Enviar</button>
         </form>
       </div>
     </section>
@@ -126,9 +158,27 @@
                 <span class="star-icon text-5xl" data-val="4">★</span>
                 <span class="star-icon text-5xl" data-val="5">★</span>
             </div>
-            <button id="sendRating" class="w-full btn-primary py-4 rounded-xl font-bold text-white uppercase tracking-widest transition-all">Enviar Feedback</button>
+
+            <div class="flex items-start gap-3 px-1 py-2 mb-4 text-left">
+              <input type="checkbox" id="termsRating" class="custom-checkbox mt-1" onchange="toggleBtn('sendRating', this.checked)">
+              <label for="termsRating" class="text-xs text-slate-400 leading-tight">
+                Aceito os <button type="button" onclick="openTerms()" class="text-cyan-400 underline">termos de uso de dados</button>.
+              </label>
+            </div>
+
+            <button id="sendRating" class="w-full btn-primary py-4 rounded-xl font-bold text-white uppercase tracking-widest transition-all btn-disabled">Enviar Feedback</button>
         </div>
     </section>
+
+    <div id="termsModal" class="fixed inset-0 z-[500] bg-black/90 flex items-center justify-center hidden p-6">
+      <div class="glass-card p-8 rounded-3xl max-w-md w-full border-cyan-500 shadow-2xl">
+        <h3 class="text-cyan-400 font-bold font-orbitron mb-4">TERMOS DE DADOS</h3>
+        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+          Ao aceitar os termos, o que você enviar ficará guardado numa base de dados que será respondida a você, para casos futuros e para ajustes técnicos, nada que você enviar será deletado ou modificado, mantendo-se em estado de envio, também será salvo a data e a hora do envio.
+        </p>
+        <button onclick="document.getElementById('termsModal').classList.add('hidden')" class="w-full py-3 bg-cyan-900/50 text-cyan-100 rounded-xl font-bold border border-cyan-500/50 hover:bg-cyan-500 hover:text-black transition-all">ENTENDI</button>
+      </div>
+    </div>
 
     <div id="accessModal" class="fixed inset-0 z-[300] bg-black/95 flex items-center justify-center hidden">
       <div class="glass-card p-10 rounded-3xl text-center max-w-xs w-full">
@@ -143,16 +193,24 @@
   </div>
 
   <script>
-    // Link do Google permanece apenas para a função GET (leitura pública)
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4M_o2299eDJIjhNmQ_OGxdBBl4AXeJ-jDkxh_mulVou9lc4M6IKMPiiqvvYY8wEYylg/exec';
-    
-    // Rota segura da sua Vercel Function (arquivo /api/send.js)
     const PROXY_URL = '/api/send';
 
     function nav(pageId) {
       document.querySelectorAll('main, section').forEach(p => p.classList.add('hidden'));
       document.getElementById(pageId).classList.remove('hidden');
       if(pageId === 'panelPage') loadFromSheets();
+    }
+
+    // Gerencia o estado do botão baseado na checkbox
+    function toggleBtn(btnId, isChecked) {
+      const btn = document.getElementById(btnId);
+      if(isChecked) btn.classList.remove('btn-disabled');
+      else btn.classList.add('btn-disabled');
+    }
+
+    function openTerms() {
+      document.getElementById('termsModal').classList.remove('hidden');
     }
 
     function setBtnLoading(btn, text, isLoading) {
@@ -165,7 +223,6 @@
       }
     }
 
-    // A leitura continua direta do Google por ser pública
     async function loadFromSheets() {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-cyan-500 font-bold font-orbitron tracking-widest"><div class="animate-pulse">SINCRONIZANDO...</div></td></tr>';
@@ -198,11 +255,9 @@
       document.getElementById('editModal').classList.remove('hidden');
     }
 
-    // Envio seguro via Vercel Proxy
     async function confirmEdit() {
       const btn = document.getElementById('saveEditBtn');
       setBtnLoading(btn, "SALVANDO...", true);
-      
       await fetch(PROXY_URL, { 
         method: 'POST', 
         body: JSON.stringify({
@@ -214,36 +269,28 @@
           motivo: document.getElementById('editMotivo').value
         }) 
       });
-      
       document.getElementById('editModal').classList.add('hidden');
       setBtnLoading(btn, "SALVAR", false);
       loadFromSheets();
     }
 
-    // Deleção segura via Vercel Proxy
     async function deleteRow(index, btn) {
       if(!confirm("Apagar permanentemente?")) return;
       setBtnLoading(btn, "...", true);
       await fetch(PROXY_URL, { 
         method: 'POST', 
-        body: JSON.stringify({
-          action: "delete", 
-          index: index
-        }) 
+        body: JSON.stringify({ action: "delete", index: index }) 
       });
       loadFromSheets();
     }
 
-    // Limpeza total segura via Vercel Proxy
     async function deleteAllRecords() {
       if(!confirm("Apagar TUDO?")) return;
       const btn = document.getElementById('clearAllBtn');
       setBtnLoading(btn, "LIMPANDO...", true);
       await fetch(PROXY_URL, { 
         method: 'POST', 
-        body: JSON.stringify({
-          action: "deleteAll"
-        }) 
+        body: JSON.stringify({ action: "deleteAll" }) 
       });
       setBtnLoading(btn, "LIMPAR TUDO", false);
       loadFromSheets();
@@ -256,9 +303,10 @@
       } else { alert("NEGADO"); }
     };
 
-    // Contato seguro via Vercel Proxy
     document.getElementById('contactForm').onsubmit = async (e) => {
       e.preventDefault();
+      if(!document.getElementById('termsContact').checked) return alert("Aceite os termos!");
+      
       const btn = document.getElementById('submitBtn');
       setBtnLoading(btn, "ENVIANDO...", true);
       await fetch(PROXY_URL, { 
@@ -271,7 +319,10 @@
         }) 
       });
       setBtnLoading(btn, "Enviar", false);
-      alert("Enviado!"); e.target.reset(); nav('mainPage');
+      alert("Enviado!"); e.target.reset(); 
+      document.getElementById('termsContact').checked = false;
+      toggleBtn('submitBtn', false);
+      nav('mainPage');
     };
 
     let rating = 0;
@@ -280,11 +331,12 @@
       document.querySelectorAll('.star-icon').forEach(st => st.classList.toggle('active', st.dataset.val <= rating));
     });
 
-    // Feedback seguro via Vercel Proxy
     document.getElementById('sendRating').onclick = async () => {
+      if(!document.getElementById('termsRating').checked) return alert("Aceite os termos!");
       const nome = document.getElementById('ratingNome').value;
       const motivo = document.getElementById('ratingMotivo').value;
       if(!nome || !rating) return alert("Preencha tudo!");
+      
       const btn = document.getElementById('sendRating');
       setBtnLoading(btn, "PROCESSANDO...", true);
       await fetch(PROXY_URL, { 
@@ -297,7 +349,10 @@
         }) 
       });
       setBtnLoading(btn, "Enviar Feedback", false);
-      alert("Sucesso!"); nav('mainPage');
+      alert("Sucesso!"); 
+      document.getElementById('termsRating').checked = false;
+      toggleBtn('sendRating', false);
+      nav('mainPage');
     };
 
     const canvas = document.getElementById('starCanvas');
