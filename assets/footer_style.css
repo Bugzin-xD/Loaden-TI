@@ -1,0 +1,13 @@
+.footer-loaden {
+    background-color: rgb(29, 29, 29);
+    width: 100%;
+    padding: 40px 20px;
+}
+
+.loaden {
+    transition: all ease-in-out 0.65s;
+}
+
+.loaden:hover {
+    transform: rotateZ(360deg);
+}
